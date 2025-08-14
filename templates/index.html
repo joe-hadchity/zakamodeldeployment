@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Object Detection</title>
+    <style>
+      body{font-family:system-ui,Arial;padding:24px;max-width:900px;margin:auto}
+      .card{padding:16px;border:1px solid #ddd;border-radius:12px}
+      img{max-width:100%;border-radius:12px;margin-top:12px}
+      pre{background:#fafafa;padding:12px;border-radius:8px}
+      button{padding:10px 14px;border-radius:10px;border:1px solid #333}
+    </style>
+  </head>
+  <body>
+    <h1>Object Detection</h1>
+    <div class="card">
+      <input id="file" type="file" accept="image/*" />
+      <button id="btn">Detect</button>
+      <h3>Detections</h3>
+      <pre id="json"></pre>
+      <img id="out" />
+    </div>
+    <script>
+      document.getElementById('btn').onclick = async () => {
+        const f = document.getElementById('file').files[0];
+        if(!f){ alert('Choose an image'); return; }
+        const fd = new FormData();
+        fd.append('image', f);
+        const res = await fetch('/api/detect', { method:'POST', body: fd });
+        const data = await res.json();
+        document.getElementById('json').textContent = JSON.stringify(data.boxes, null, 2);
+        document.getElementById('out').src = data.image_url;
+      }
+    </script>
+  </body>
+</html>
